@@ -18,12 +18,13 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.topright = (self.xpos, pos[1])
         else:
             global ai_speed
-            if self.rect.center[1] < ball.rect.center[1]:
-                dy = ai_speed
-            elif self.rect.center[1] > ball.rect.center[1]:
-                dy = -1*ai_speed
+            if self.rect.center[1]-20 < ball.rect.center[1]:
+                dy = ai_speed + random.random()*ai_speed
+            elif self.rect.center[1]+20 > ball.rect.center[1]:
+                dy = -1*ai_speed - random.random()*ai_speed
             else:
                 dy = 0
+            print dy
             self.rect.center = (self.xpos-5, self.rect.center[1]+dy)
 
 class Ball(pygame.sprite.Sprite):
@@ -39,7 +40,7 @@ class Ball(pygame.sprite.Sprite):
         self.image.fill(pygame.Color("white"))
 
     def get_new_dy(self, paddle):
-        new_dy = -(paddle.rect.center[1] - ball.rect.center[1])/15.0
+        new_dy = -(paddle.rect.center[1] - ball.rect.center[1])/20.0
         return new_dy
 
     def update(self):
@@ -114,7 +115,7 @@ def new_round():
 pygame.init()
 
 ball_speed = 5
-ai_speed = 3
+ai_speed = 4
 player = Paddle(10)
 computer = Paddle(630, True)
 ball = Ball([player, computer])
@@ -133,6 +134,7 @@ background.fill(pygame.Color("black"))
 screen.blit(background, (0,0))
 pygame.display.flip()
 pygame.display.set_caption("Pong - Player: 0  -  Computer: 0")
+pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 
 while 1:
