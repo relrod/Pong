@@ -64,13 +64,19 @@ class Ball(pygame.sprite.Sprite):
     def collision(self, target):
         return self.rect.colliderect(target)
 
+def update_caption():
+    global player_wins, ai_wins
+    pygame.display.set_caption("Pong - Player: " + str(player_wins) + "  -  Computer: " + str(ai_wins))
+
 def player_score():
     global player_wins
     player_wins += 1
+    update_caption()
 
 def ai_score():
     global ai_wins
     ai_wins += 1
+    update_caption()
 
 def new_round():
     global player, computer, ball, allsprites, ai_speed
@@ -104,7 +110,7 @@ background.fill(pygame.Color("black"))
 
 screen.blit(background, (0,0))
 pygame.display.flip()
-
+pygame.display.set_caption("Pong - Player: 0  -  Computer: 0")
 clock = pygame.time.Clock()
 
 while 1:
