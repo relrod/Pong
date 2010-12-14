@@ -18,7 +18,12 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.topright = (self.xpos, pos[1])
         else:
             global ai_speed
-            dy = (1 if self.rect.center[1] < ball.rect.center[1] else -1)*ai_speed
+            if self.rect.center[1] < ball.rect.center[1]:
+                dy = ai_speed
+            elif self.rect.center[1] > ball.rect.center[1]:
+                dy = -1*ai_speed
+            else:
+                dy = 0
             self.rect.center = (self.xpos-5, self.rect.center[1]+dy)
 
 class Ball(pygame.sprite.Sprite):
@@ -68,22 +73,39 @@ def update_caption():
     global player_wins, ai_wins
     pygame.display.set_caption("Pong - Player: " + str(player_wins) + "  -  Computer: " + str(ai_wins))
 
+def check_win():
+    global player_wins, ai_wins, ai_speed
+    if player_wins == 5:
+        pygame.display.set_caption("Player wins!")
+        player_wins = 0
+        ai_wins = 0
+        ai_speed = 3
+        new_round()
+    elif ai_wins == 5:
+        pygame.display.set_caption("Computer wins!")
+        player_wins = 0
+        ai_wins = 0
+        ai_speed = 3
+        new_round()
+
 def player_score():
     global player_wins
     player_wins += 1
     update_caption()
+    check_win()
 
 def ai_score():
     global ai_wins
     ai_wins += 1
     update_caption()
+    check_win()
 
 def new_round():
     global player, computer, ball, allsprites, ai_speed
     player = Paddle(10)
     computer = Paddle(630, True)
     ball = Ball([player, computer])
-    ai_speed += 1
+    ai_speed += 0.5
     allsprites = pygame.sprite.RenderPlain((player, computer, ball))
   
 
