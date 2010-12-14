@@ -9,16 +9,17 @@ class Paddle(pygame.sprite.Sprite):
         self.ai = ai
         self.image =  pygame.Surface((10, 70))
         self.rect = self.image.get_rect()
-        self.rect.topright = (205, xpos)
+        self.rect.topright = (xpos, 240)
         self.image.fill(pygame.Color("white"))
 
     def update(self):
-        pos = pygame.mouse.get_pos()
-        print pos
         if not self.ai:
+            pos = pygame.mouse.get_pos()
             self.rect.topright = (self.xpos, pos[1])
         else:
-            self.rect.topright = (self.xpos, ball.rect.center[1]-35)
+            global ai_speed
+            dy = (1 if self.rect.center[1] < ball.rect.center[1] else -1)*ai_speed
+            self.rect.center = (self.xpos-5, self.rect.center[1]+dy)
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, paddles):
@@ -31,6 +32,10 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (320, 240)
         self.image.fill(pygame.Color("white"))
+
+    def get_new_dy(self, paddle):
+        new_dy = -(paddle.rect.center[1] - ball.rect.center[1])/15.0
+        return new_dy
 
     def update(self):
         new_dx = self.pos_d[0]
@@ -50,7 +55,7 @@ class Ball(pygame.sprite.Sprite):
         for paddle in self.paddles:
             if self.collision(paddle.rect):
                 new_dx = -new_dx
-                new_dy = -new_dy
+                new_dy = self.get_new_dy(paddle)
                 break
 
         self.pos_d = (new_dx, new_dy)
@@ -68,11 +73,11 @@ def ai_score():
     ai_wins += 1
 
 def new_round():
-    global player, computer, ball, allsprites, ball_speed
+    global player, computer, ball, allsprites, ai_speed
     player = Paddle(10)
     computer = Paddle(630, True)
     ball = Ball([player, computer])
-    ball_speed += 1
+    ai_speed += 1
     allsprites = pygame.sprite.RenderPlain((player, computer, ball))
   
 
@@ -81,6 +86,7 @@ def new_round():
 pygame.init()
 
 ball_speed = 5
+ai_speed = 3
 player = Paddle(10)
 computer = Paddle(630, True)
 ball = Ball([player, computer])
