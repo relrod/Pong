@@ -99,7 +99,10 @@ background.fill(pygame.Color("black"))
 screen.blit(background, (0,0))
 pygame.display.flip()
 
+clock = pygame.time.Clock()
+
 while 1:
+    clock.tick(30)
     pygame.event.pump()
     allsprites.update()
     screen.blit(background,(0,0))
