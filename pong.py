@@ -28,9 +28,8 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.center = (self.xpos-5, self.rect.center[1]+dy)
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, paddles):
+    def __init__(self, paddles, ball_speed):
         pygame.sprite.Sprite.__init__(self)
-        global ball_speed
         self.speed = ball_speed
         self.paddles = paddles
         self.pos_d = (random.choice([-1,1]), random.choice([-1,1]))
@@ -105,7 +104,7 @@ def new_round():
     global player, computer, ball, allsprites, ai_speed
     player = Paddle(10)
     computer = Paddle(630, True)
-    ball = Ball([player, computer])
+    ball = Ball([player, computer], ball_speed)
     ai_speed += 0.5
     allsprites = pygame.sprite.RenderPlain((player, computer, ball))
   
@@ -118,7 +117,7 @@ ball_speed = 5
 ai_speed = 4
 player = Paddle(10)
 computer = Paddle(630, True)
-ball = Ball([player, computer])
+ball = Ball([player, computer], ball_speed)
 
 player_wins = 0
 ai_wins = 0
@@ -137,7 +136,7 @@ pygame.display.set_caption("Pong - Player: 0  -  Computer: 0")
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 
-while 1:
+while True:
     clock.tick(30)
     pygame.event.pump()
     allsprites.update()
